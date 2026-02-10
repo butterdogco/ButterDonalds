@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ButterDonalds</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <nav>
+    <div class="branding">
+      <img src="img/logo.png" alt="ButterDonalds Logo" class="logo">
+      <p>ButterDonalds</p>
+    </div>
+  </nav>
+
+  <main>
+    <section class="fat-alert hidden" id="fat-alert">
+      <img src="img/creature.jpg" class="fat-alert-image" loading="lazy">
+      <h1>⚠ FATASS DETECTED ⚠</h1>
+      <p>Warning: You have many items in your cart.</p>
+      <p>Consider removing some items before checking out.</p>
+      <button class="btn-primary" id="fat-alert-close">OK</button>
+    </section>
+
+    <section class="menu" id="menu-section">
+      <h1 class="inset-primary">Our Menu</h1>
+      <div class="menu-items" id="menu-items-container"></div>
+    </section>
+    <section class="cart-section hidden" id="cart-section">
+      <div class="header">
+        <div class="left">
+          <h1 class="inset-primary">Your Cart</h1>
+          <p class="cart-total inset-secondary" id="cart-total">Total: $0.00</p>
+        </div>
+        <button class="checkout-button btn-primary" id="checkout-button" aria-label="Proceed to Checkout" title="Proceed to checkout">Checkout</button>
+      </div>
+
+      <ul class="cart-summary" id="cart-summary-container">
+        <p id="cart-summary-count">0 items in cart</p>
+      </ul>
+      <ul class="cart-items" id="cart-items-container"></ul>
+    </section>
+  </main>
+
+
+  <button class="cart" id="cart-button" aria-label="View Cart" aria-haspopup="true" aria-controls="cart-section" title="Toggle cart view">
+    <img src="img/cart.png" alt="Cart Icon" class="cart-icon">
+    <p id="cart-count">0</p>
+  </button>
+
+  <script src="app.js"></script>
+</body>
+
+</html>
