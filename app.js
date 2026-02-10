@@ -250,7 +250,7 @@ function displayMenuItems(category) {
     const itemElement = document.createElement('li');
     itemElement.classList.add('menu-item');
     itemElement.innerHTML = `
-      <img src="img/items/${item.image}" alt="${item.name}" class="menu-item-image">
+      <img src="img/items/${item.image}" alt="${item.name}" class="menu-item-image" loading="lazy">
       <h3 class="menu-item-name">${item.name}</h3>
       <div class="info">
         <p class="menu-item-price">$${formatPrice(item.price)}</p>
@@ -320,7 +320,7 @@ function updateCart() {
     const cartItemElement = document.createElement('div');
     cartItemElement.classList.add('cart-item', 'menu-item');
     cartItemElement.innerHTML = `
-      <img src="img/items/${item.image}" alt="${item.name}" class="cart-item-image">
+      <img src="img/items/${item.image}" alt="${item.name}" class="cart-item-image" loading="lazy">
       <h3 class="cart-item-name">${item.name}</h3>
       <p class="cart-item-price">$${formatPrice(item.price)}</p>
     `;
