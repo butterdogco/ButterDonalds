@@ -191,13 +191,14 @@ const CART_SUMMARY_CONTAINER = document.getElementById('cart-summary-container')
 const CART_ITEMS_CONTAINER = document.getElementById('cart-items-container');
 const CART_TOTAL_ELEMENT = document.getElementById('cart-total');
 const CART_SUMMARY_COUNT_ELEMENT = document.getElementById('cart-summary-count');
+const CART_CHECKOUT_BUTTON = document.getElementById('cart-checkout-button');
 
 const FAT_ALERT_THRESHOLD = 25;
 const FAT_ALERT_ELEMENT = document.getElementById('fat-alert');
 const FAT_ALERT_CLOSE_BUTTON = document.getElementById('fat-alert-close');
 
 let cart = [];
-let actionSection = MENU_SECTION;
+let activeSection = MENU_SECTION;
 let fatAlerted = false;
 let fatSound;
 
@@ -349,14 +350,14 @@ function updateCart() {
 }
 
 function toggleCart() {
-  if (actionSection === MENU_SECTION) {
-    actionSection.classList.add('hidden');
+  if (activeSection === MENU_SECTION) {
+    activeSection.classList.add('hidden');
     CART_SECTION.classList.remove('hidden');
-    actionSection = CART_SECTION;
+    activeSection = CART_SECTION;
   } else {
-    actionSection.classList.add('hidden');
+    activeSection.classList.add('hidden');
     MENU_SECTION.classList.remove('hidden');
-    actionSection = MENU_SECTION;
+    activeSection = MENU_SECTION;
   }
 
   new Audio('audio/toggle-cart.mp3').play();
@@ -378,7 +379,23 @@ function closeFatAlert() {
   }
 }
 
+function checkout() {
+  if (cart.length === 0) {
+    alert('Your cart is empty!');
+    return;
+  }
+
+  // Clear cart and return to menu
+  cart = [];
+  updateCart();
+  toggleCart();
+  fatAlerted = false;
+
+  alert("This feature is NOT implemented yet (i am lazy)");
+}
+
 addAllMenuItems();
 
 CART_BUTTON.addEventListener('click', toggleCart);
+CART_CHECKOUT_BUTTON.addEventListener('click', checkout);
 FAT_ALERT_CLOSE_BUTTON.addEventListener('click', closeFatAlert);
