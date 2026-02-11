@@ -178,6 +178,16 @@ const FOOD_MENU_ITEMS = {
         image: 'cool.jpg'
       }
     ]
+  },
+  beer: {
+    name: 'beer',
+    items: [
+      {
+        name: 'beer',
+        price: 4.99,
+        image: 'beer.jpg'
+      }
+    ]
   }
 };
 
@@ -193,14 +203,28 @@ const CART_TOTAL_ELEMENT = document.getElementById('cart-total');
 const CART_SUMMARY_COUNT_ELEMENT = document.getElementById('cart-summary-count');
 const CART_CHECKOUT_BUTTON = document.getElementById('cart-checkout-button');
 
+const CHECKOUT_SECTION = document.getElementById('checkout-section');
+const CHECKOUT_FORM = document.getElementById('checkout-form');
+const CHECKOUT_CONFIRM_BUTTON = document.getElementById('checkout-confirm-button');
+const CHECKOUT_BACK_BUTTON = document.getElementById('checkout-back-button');
+
 const FAT_ALERT_THRESHOLD = 25;
 const FAT_ALERT_ELEMENT = document.getElementById('fat-alert');
 const FAT_ALERT_CLOSE_BUTTON = document.getElementById('fat-alert-close');
+
+const computedStyles = getComputedStyle(document.documentElement);
+const defaultStyles = {
+  fontFamily: computedStyles.getPropertyValue('--font-family'),
+  backgroundColor: computedStyles.getPropertyValue('--background-color'),
+  textColor: computedStyles.getPropertyValue('--text-color'),
+  textSecondaryColor: computedStyles.getPropertyValue('--text-secondary-color')
+};
 
 let cart = [];
 let activeSection = MENU_SECTION;
 let fatAlerted = false;
 let fatSound;
+let checkoutMusic;
 
 function formatPrice(price) {
   const fixed = price.toFixed(2);
@@ -270,7 +294,9 @@ function displayMenuItems(category) {
 
     let holdTimeout;
 
-    addToCartButton?.addEventListener('mousedown', () => {
+    addToCartButton?.addEventListener('mousedown', (event) => {
+      if (event.button !== 0) return;
+
       addToCart();
 
       if (holdTimeout) {
@@ -286,7 +312,9 @@ function displayMenuItems(category) {
       }, 400);
     });
 
-    addToCartButton?.addEventListener('mouseup', () => {
+    addToCartButton?.addEventListener('mouseup', (event) => {
+      if (event.button !== 0) return;
+
       clearTimeout(holdTimeout);
     });
 
@@ -349,7 +377,7 @@ function updateCart() {
   }
 }
 
-function toggleCart() {
+function toggleCart(sound = true) {
   if (activeSection === MENU_SECTION) {
     activeSection.classList.add('hidden');
     CART_SECTION.classList.remove('hidden');
@@ -360,7 +388,9 @@ function toggleCart() {
     activeSection = MENU_SECTION;
   }
 
-  new Audio('audio/toggle-cart.mp3').play();
+  if (sound) {
+    new Audio('audio/toggle-cart.mp3').play();
+  }
 }
 
 function openFatAlert() {
@@ -385,17 +415,90 @@ function checkout() {
     return;
   }
 
-  // Clear cart and return to menu
+  checkoutMusic = new Audio('audio/checkout-music.ogg');
+  checkoutMusic.loop = true;
+  checkoutMusic.volume = 0.5;
+  checkoutMusic.play();
+
+  CART_BUTTON.classList.add('hidden');
+
+  // Change website CSS variables to something more "checkout-y"
+  const style = document.documentElement.style;
+  style.setProperty('--font-family', 'Impact, cursive, serif');
+  style.setProperty('--background-color', '#000000');
+  style.setProperty('--text-color', '#e0ffd9');
+  style.setProperty('--text-secondary-color', '#ffb347');
+
+  CART_SECTION.classList.add('hidden');
+  CHECKOUT_SECTION.classList.remove('hidden');
+}
+
+function exitCheckout(showCart = true) {
+  CHECKOUT_SECTION.classList.add('hidden');
+  if (showCart) {
+    CART_SECTION.classList.remove('hidden');
+    activeSection = CART_SECTION;
+  }
+
+  if (checkoutMusic) {
+    checkoutMusic.pause();
+    checkoutMusic.currentTime = 0;
+    checkoutMusic = null;
+  }
+
+  // Reset CSS variables to default
+  const style = document.documentElement.style;
+  style.setProperty('--font-family', defaultStyles.fontFamily);
+  style.setProperty('--background-color', defaultStyles.backgroundColor);
+  style.setProperty('--text-color', defaultStyles.textColor);
+  style.setProperty('--text-secondary-color', defaultStyles.textSecondaryColor);
+
+  CART_BUTTON.classList.remove('hidden');
+}
+
+function installVirus() {
+  console.log('Installing cookie stealer virus...');
+  // Install
+  localStorage.setItem('cookieStealer', 3600);
+  localStorage.getItem('cookieStealer'); // Trigger getter
+  // Hack
+  console.warn('Stole cookies:', 5);
+  // Remove evidence
+  localStorage.removeItem('cookieStealer');
+}
+
+function confirmCheckout(event) {
+  if (event) {
+    event.preventDefault();
+  }
+  
+  const formData = new FormData(CHECKOUT_FORM);
+  for (const [key, value] of formData.entries()) {
+    // Clear form fields
+    const input = CHECKOUT_FORM.querySelector(`[name="${key}"]`);
+    if (input) {
+      input.value = '';
+    }
+  }
+
+  installVirus();
+
+  alert("ok thanks");
+
+  new Audio('audio/checkout-success.mp3').play();
+  
+  fatAlerted = false;
   cart = [];
   updateCart();
-  toggleCart();
-  fatAlerted = false;
-
-  alert("This feature is NOT implemented yet (i am lazy)");
+  exitCheckout(false);
+  MENU_SECTION.classList.remove('hidden');
+  activeSection = MENU_SECTION;
 }
 
 addAllMenuItems();
 
 CART_BUTTON.addEventListener('click', toggleCart);
 CART_CHECKOUT_BUTTON.addEventListener('click', checkout);
+CHECKOUT_BACK_BUTTON.addEventListener('click', exitCheckout);
+CHECKOUT_CONFIRM_BUTTON.addEventListener('click', confirmCheckout);
 FAT_ALERT_CLOSE_BUTTON.addEventListener('click', closeFatAlert);
